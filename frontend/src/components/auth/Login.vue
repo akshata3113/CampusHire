@@ -19,6 +19,8 @@
           </div>
         </div>
 
+        <p class="forgot-password" @click="showResetForm = true">Forgot password?</p>
+
         <button type="submit" class="login-button" :disabled="loading">
           <span v-if="!loading">Login →</span>
           <span v-else>Logging in...</span>
@@ -30,6 +32,21 @@
       <p class="register-link">
         Don't have an account? <router-link to="/register">Sign up</router-link>
       </p>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div v-if="showResetForm" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showResetForm = false">&times;</span>
+        <h3>Reset Password</h3>
+        <p>Enter your email to receive a password reset link.</p>
+        <input type="email" v-model="resetEmail" placeholder="Enter your email" required />
+        <button @click="resetPassword" :disabled="resetLoading">
+          <span v-if="!resetLoading">Send Reset Link</span>
+          <span v-else>Sending...</span>
+        </button>
+        <p v-if="resetMessage" class="reset-message">{{ resetMessage }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +61,10 @@ export default {
       password: "",
       loading: false,
       errorMessage: "",
+      showResetForm: false,
+      resetEmail: "",
+      resetLoading: false,
+      resetMessage: "",
     };
   },
   methods: {
@@ -71,6 +92,25 @@ export default {
         this.errorMessage = error.response?.data?.message || "Login failed. Please try again.";
       } finally {
         this.loading = false;
+      }
+    },
+
+    async resetPassword() {
+      this.resetLoading = true;
+      this.resetMessage = "";
+
+      try {
+        const response = await axios.post("http://localhost:5000/api/auth/reset-password", {
+          email: this.resetEmail,
+        });
+
+        console.log("Password reset email sent:", response.data);
+        this.resetMessage = "✅ Reset link sent! Check your email.";
+      } catch (error) {
+        console.error("Reset error:", error.response ? error.response.data : error.message);
+        this.resetMessage = error.response?.data?.message || "❌ Failed to send reset link.";
+      } finally {
+        this.resetLoading = false;
       }
     },
   },
@@ -141,8 +181,54 @@ h2 {
   background: transparent;
 }
 
-/* Login Button */
-.login-button {
+/* Forgot Password */
+.forgot-password {
+  font-size: 14px;
+  color: #1a3bb4;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 350px;
+}
+
+.modal-content h3 {
+  color: #1a3bb4;
+  margin-bottom: 10px;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-content button {
   width: 100%;
   background: #1a3bb4;
   color: white;
@@ -151,18 +237,19 @@ h2 {
   font-size: 16px;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
 }
 
-.login-button:hover {
+.modal-content button:hover {
   background: #153191;
 }
 
-/* Error Message */
-.error-message {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
+/* Close Button */
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 /* Register Link */
@@ -179,5 +266,12 @@ h2 {
 
 .register-link a:hover {
   text-decoration: underline;
+}
+
+/* Reset Message */
+.reset-message {
+  color: green;
+  font-size: 14px;
+  margin-top: 10px;
 }
 </style>

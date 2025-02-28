@@ -1,29 +1,36 @@
 <template>
-  <div class="job-card">
+  <div v-if="job" class="job-card">
+    <!-- Job Header -->
     <div class="job-header">
-      <img :src="job.companyLogo" alt="Company Logo" class="company-logo" />
+      <img :src="job.companyLogo || defaultLogo" alt="Company Logo" class="company-logo" />
       <div>
-        <h3 class="job-title">{{ job.title }}</h3>
-        <p class="company-name">{{ job.company }}</p>
+        <h3 class="job-title">{{ job.title || "Job Title" }}</h3>
+        <p class="company-name">{{ job.company || "Company Name" }}</p>
       </div>
       <button class="save-job">
         <i class="fas fa-bookmark"></i> Save Job
       </button>
     </div>
 
-    <p class="job-info"><strong>Skills:</strong> {{ job.skills.join(", ") }}</p>
-    <p class="job-info"><strong>Location:</strong> {{ job.location }}</p>
-    <p class="job-info"><strong>Bond:</strong> {{ job.bond }}</p>
+    <!-- Job Info -->
+    <p class="job-info">
+      <strong>Skills:</strong>
+      {{ Array.isArray(job.skills) ? job.skills.join(", ") : "N/A" }}
+    </p>
+    <p class="job-info"><strong>Location:</strong> {{ job.location || "N/A" }}</p>
+    <p class="job-info"><strong>Bond:</strong> {{ job.bond || "N/A" }}</p>
 
+    <!-- Job Meta -->
     <div class="job-meta">
-      <span class="salary">💰 {{ job.salary }} LPA</span>
-      <span class="applicants">👥 {{ job.applicants }} Students applied</span>
+      <span class="salary">💰 {{ job.salary ? job.salary + " LPA" : "N/A" }}</span>
+      <span class="applicants">👥 {{ job.applicants || 0 }} Students applied</span>
     </div>
 
+    <!-- Job Actions -->
     <div class="job-actions">
       <button class="apply-btn">Apply Now</button>
       <div class="job-tags">
-        <span class="tag">Last date: {{ job.lastDate }}</span>
+        <span class="tag">Last date: {{ job.lastDate || "N/A" }}</span>
         <span class="tag">Handbook</span>
         <span class="tag">View job details</span>
       </div>
@@ -34,8 +41,16 @@
 <script>
 export default {
   props: {
-    job: Object
-  }
+    job: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      defaultLogo: "https://via.placeholder.com/50", // Fallback logo if no logo is provided
+    };
+  },
 };
 </script>
 

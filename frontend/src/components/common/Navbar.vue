@@ -11,7 +11,7 @@
       <router-link to="/placements" class="nav-item">Placements</router-link>
       <router-link to="/companies" class="nav-item">Companies</router-link>
       <router-link to="/messages" class="nav-item">Messages</router-link>
-      <router-link to="/" class="nav-item">Learning</router-link>
+      <router-link to="/learnings" class="nav-item">Learning</router-link>
     </div>
 
     <!-- Account and Auth -->

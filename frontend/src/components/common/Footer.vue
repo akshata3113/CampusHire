@@ -12,8 +12,8 @@
         <router-link to="/about">About</router-link>
         <router-link to="/services">Services</router-link>
         <router-link to="/contact">Contact</router-link>
-        <router-link to="/privacy">Privacy Policy</router-link>
-        <router-link to="/terms">Terms of Use</router-link>
+        <router-link to="/privacy-policy">Privacy Policy</router-link>
+        <router-link to="/terms-of-use">Terms of Use</router-link>
       </div>
 
       <!-- Social Media -->
